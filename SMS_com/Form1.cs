@@ -13,11 +13,14 @@ namespace SMS_com
 {
     public partial class Form1 : Form
     {
+        static SerialPort _serialPort;
+        string[] myPort; //массив для COM-портов
+
         public Form1()
         {
             InitializeComponent();
-            //SerialPort port = new SerialPort("COM3", 9600);//Порт со скоростью 9600 бит в секунду
-             
+            _serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+            //_serialPort = SerialPort();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -28,9 +31,24 @@ namespace SMS_com
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            string[] myPort; //массив для COM-портов
             myPort = SerialPort.GetPortNames();//в массив помещаются доступные порты
             comboBox1.Items.AddRange(myPort);//теперь этот массив заносится в список(comboBox)
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //foreach (string port in myPort)
+            //{
+            //    _serialPort = new SerialPort(port);
+            //}
+
+            _serialPort.Open();
+            if (_serialPort.IsOpen)
+            {
+                MessageBox.Show("Открыто");
+            }
+            _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
         }
     }
 }
