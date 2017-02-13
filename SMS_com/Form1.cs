@@ -13,13 +13,15 @@ namespace SMS_com
 {
     public partial class Form1 : Form
     {
-        static SerialPort _serialPort;
+        SerialPort _serialPort;
         string[] myPort; //массив для COM-портов
+        char[] textPort;
+        string text;
 
         public Form1()
         {
             InitializeComponent();
-            _serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+            _serialPort = new SerialPort("COM3");
             //_serialPort = SerialPort();
         }
 
@@ -38,16 +40,23 @@ namespace SMS_com
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //foreach (string port in myPort)
-            //{
-            //    _serialPort = new SerialPort(port);
-            //}
-
-            _serialPort.Open();
-            if (_serialPort.IsOpen)
+            _serialPort.Open();//открытие порта
+            if (_serialPort.IsOpen)//если порт открыт
             {
                 MessageBox.Show("Открыто");
             }
+
+            text = textBox1.Text;//записываю текст сообщения в массив string
+            textPort = text.ToCharArray();//запись сообщения в массив char
+            byte[] bytes = new byte[text.Length];//массив байт для передачи информации порту
+            int i = 0;
+
+            foreach(char sym in textPort)
+            {
+                bytes[i] = Convert.ToByte(sym);//запись в массив byte
+                i++;
+            }
+            
             _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
         }
     }
