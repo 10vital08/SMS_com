@@ -50,6 +50,9 @@ namespace SMS_com
             Encoding.GetEncoding("KOI8-R");
             textPort = text.ToCharArray();//запись сообщения в массив char
             byte[] bytes = new byte[text.Length];//массив байт для передачи информации порту
+            bytes = Encoding.UTF8.GetBytes(textPort);
+            byte[] KoiByte = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding("KOI8-R"), bytes);
+            var Koi8Byte = Encoding.GetEncoding("KOI8-R").GetString(KoiByte);
             int i = 0;
             foreach (char sym in textPort)
             {
