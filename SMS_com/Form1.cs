@@ -23,7 +23,6 @@ namespace SMS_com
         {
             InitializeComponent();
             _serialPort = new SerialPort("COM3");
-            //_serialPort = SerialPort();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -48,6 +47,7 @@ namespace SMS_com
             }
 
             text = textBox1.Text;//записываю текст сообщения в массив string
+            Encoding.GetEncoding("KOI8-R");
             textPort = text.ToCharArray();//запись сообщения в массив char
             byte[] bytes = new byte[text.Length];//массив байт для передачи информации порту
             int i = 0;
@@ -56,7 +56,7 @@ namespace SMS_com
                 bytes[i] = Convert.ToByte(sym);//запись в массив byte
                 i++;
             }
-
+            
             _serialPort.WriteLine("AT \r\n");//переход в режим готовности
             Thread.Sleep(500);//обязательные паузы между командами
             _serialPort.Write("AT+CMGF=1 \r\n"); //устанавливается текстовый режим для отправки сообщений
@@ -64,7 +64,8 @@ namespace SMS_com
             _serialPort.Write("AT+CMGS=\"+79372611302\"" + "\r\n");//передаем команду с номером телефона получателя СМС
             Thread.Sleep(500);
             //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
-            _serialPort.Write(bytes + char.ConvertFromUtf32(26) + "\r\n");
+            _serialPort.Write(bytes, 0, text.Length);
+            _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
             Thread.Sleep(500);
             _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
         }
