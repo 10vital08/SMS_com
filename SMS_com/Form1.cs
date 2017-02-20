@@ -41,9 +41,10 @@ namespace SMS_com
         private void button2_Click(object sender, EventArgs e)
         {
             _serialPort.Open();//открытие порта
-            if (_serialPort.IsOpen)//если порт открыт
+            if (!_serialPort.IsOpen)//если порт открыт
             {
-                //MessageBox.Show("Открыто");
+                _serialPort.Open();
+               // MessageBox.Show("Открыто");
             }
 
             var text = textBox1.Text;//записываю текст сообщения в массив string
@@ -73,11 +74,11 @@ namespace SMS_com
             Thread.Sleep(500);
             _serialPort.Write("AT+CMGS=\"+79372611302\"" + "\r\n");//передаем команду с номером телефона получателя СМС
             Thread.Sleep(500);
-            _serialPort.Write(bytesKoi8, 0, 0);
+            _serialPort.Write(bytesKoi8, 0, bytesKoi8.Length);
             //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
             _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
             Thread.Sleep(500);
-            _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
+            _serialPort.Close();
         }
     }
 }
