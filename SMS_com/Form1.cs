@@ -53,21 +53,20 @@ namespace SMS_com
             byte[] bytesKoi8 = encodingKoi8.GetBytes(textBox1.Text);
             //byte[] convertBytes = Encoding.Convert(encodingKoi8,encodingKoi8,bytesKoi8);
             //string koiString = encodingUtf.GetString(convertBytes);
-            string koiString = encodingKoi8.GetString(bytesKoi8);
-            string stringUtf8 = encodingKoi8.GetString(bytesKoi8);
+            //string koiString = encodingKoi8.GetString(bytesKoi8);
+
             //textPort = koiString.ToCharArray();
-            
-            
-            //for(int i = 0; i < text.Length; i++)
-            //{
-            //    bytes[i] = ;
-            //}
-            //foreach (char sym in textPort)
-            //{
-            //    bytes[i] = Convert.ToByte(sym);//запись в массив byte
-            //    i++;
-            //}
-            
+
+
+            for (int i = 0; i < bytesKoi8.Length; i++)
+            {
+                //результатом битовой операции является число значений типа int(int32),т.е. 4 байта
+                //нужно преобразовать в байт
+                bytesKoi8[i] = (byte) (bytesKoi8[i] & 0x7F);//обнуляем битовой операцией "И" старший бит в каждом байте
+
+            }
+
+            string stringUtf8result = encodingKoi8.GetString(bytesKoi8);
             _serialPort.WriteLine("AT \r\n");//переход в режим готовности
             Thread.Sleep(500);//обязательные паузы между командами
             _serialPort.Write("AT+CMGF=1 \r\n"); //устанавливается текстовый режим для отправки сообщений
