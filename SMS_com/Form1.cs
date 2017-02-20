@@ -47,12 +47,14 @@ namespace SMS_com
             }
 
             var text = textBox1.Text;//записываю текст сообщения в массив string
-            Encoding encodingkoi8 = Encoding.GetEncoding("KOI8-R");
-            Encoding encodingutf = Encoding.UTF8;
-            byte[] originalBytes = encodingkoi8.GetBytes(textBox1.Text);
-            byte[] convertBytes = Encoding.Convert(encodingkoi8,encodingkoi8,originalBytes);
-            string koiString = encodingutf.GetString(convertBytes);
-            textPort = koiString.ToCharArray();
+            Encoding encodingKoi8 = Encoding.GetEncoding("KOI8-R");
+            //Encoding encodingUtf = Encoding.UTF8;
+            byte[] bytesKoi8 = encodingKoi8.GetBytes(textBox1.Text);
+            //byte[] convertBytes = Encoding.Convert(encodingKoi8,encodingKoi8,bytesKoi8);
+            //string koiString = encodingUtf.GetString(convertBytes);
+            string koiString = encodingKoi8.GetString(bytesKoi8);
+            string stringUtf8 = encodingKoi8.GetString(bytesKoi8);
+            //textPort = koiString.ToCharArray();
             
             
             //for(int i = 0; i < text.Length; i++)
@@ -71,8 +73,8 @@ namespace SMS_com
             Thread.Sleep(500);
             _serialPort.Write("AT+CMGS=\"+79372611302\"" + "\r\n");//передаем команду с номером телефона получателя СМС
             Thread.Sleep(500);
+            _serialPort.Write(bytesKoi8, 0, 0);
             //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
-            _serialPort.Write(convertBytes, 0, 0);
             _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
             Thread.Sleep(500);
             _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
