@@ -47,18 +47,23 @@ namespace SMS_com
             }
 
             text = textBox1.Text;//записываю текст сообщения в массив string
-            Encoding.GetEncoding("KOI8-R");
-            textPort = text.ToCharArray();//запись сообщения в массив char
-            byte[] bytes = new byte[text.Length];//массив байт для передачи информации порту
-            bytes = Encoding.UTF8.GetBytes(textPort);
-            byte[] KoiByte = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding("KOI8-R"), bytes);
-            var Koi8Byte = Encoding.GetEncoding("KOI8-R").GetString(KoiByte);
-            int i = 0;
-            foreach (char sym in textPort)
-            {
-                bytes[i] = Convert.ToByte(sym);//запись в массив byte
-                i++;
-            }
+            Encoding Koi8Fotmat = Encoding.GetEncoding("KOI8-R");
+            Encoding UtfFormat = Encoding.UTF8;
+            byte[] OriginagBytes = Koi8Fotmat.GetBytes(text);
+            byte[] ConvertBytes = Encoding.Convert(Koi8Fotmat,Koi8Fotmat,OriginagBytes);
+            string KoiString = UtfFormat.GetString(ConvertBytes);
+            textPort = KoiString.ToCharArray();
+            
+            
+            //for(int i = 0; i < text.Length; i++)
+            //{
+            //    bytes[i] = ;
+            //}
+            //foreach (char sym in textPort)
+            //{
+            //    bytes[i] = Convert.ToByte(sym);//запись в массив byte
+            //    i++;
+            //}
             
             _serialPort.WriteLine("AT \r\n");//переход в режим готовности
             Thread.Sleep(500);//обязательные паузы между командами
@@ -67,7 +72,7 @@ namespace SMS_com
             _serialPort.Write("AT+CMGS=\"+79372611302\"" + "\r\n");//передаем команду с номером телефона получателя СМС
             Thread.Sleep(500);
             //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
-            _serialPort.Write(bytes, 0, text.Length);
+            //_serialPort.Write(bytes, 0, text.Length);
             _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
             Thread.Sleep(500);
             _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
