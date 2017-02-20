@@ -51,8 +51,8 @@ namespace SMS_com
             Encoding utfFormat = Encoding.UTF8;
             byte[] originagBytes = koi8Fotmat.GetBytes(textBox1.Text);
             byte[] convertBytes = Encoding.Convert(koi8Fotmat,koi8Fotmat,originagBytes);
-            string KoiString = utfFormat.GetString(convertBytes);
-            textPort = KoiString.ToCharArray();
+            string koiString = utfFormat.GetString(convertBytes);
+            textPort = koiString.ToCharArray();
             
             
             //for(int i = 0; i < text.Length; i++)
@@ -72,7 +72,7 @@ namespace SMS_com
             _serialPort.Write("AT+CMGS=\"+79372611302\"" + "\r\n");//передаем команду с номером телефона получателя СМС
             Thread.Sleep(500);
             //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
-            _serialPort.Write(ConvertBytes, 0, 0);
+            _serialPort.Write(convertBytes, 0, 0);
             _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
             Thread.Sleep(500);
             _serialPort.Close();//закрываю порт, чтобы по следующему клику проверить его открытие
