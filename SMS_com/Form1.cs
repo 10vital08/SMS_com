@@ -47,11 +47,11 @@ namespace SMS_com
             }
 
             var text = textBox1.Text;//записываю текст сообщения в массив string
-            Encoding koi8Fotmat = Encoding.GetEncoding("KOI8-R");
-            Encoding utfFormat = Encoding.UTF8;
-            byte[] originagBytes = koi8Fotmat.GetBytes(textBox1.Text);
-            byte[] convertBytes = Encoding.Convert(koi8Fotmat,koi8Fotmat,originagBytes);
-            string koiString = utfFormat.GetString(convertBytes);
+            Encoding encodingkoi8 = Encoding.GetEncoding("KOI8-R");
+            Encoding encodingutf = Encoding.UTF8;
+            byte[] originalBytes = encodingkoi8.GetBytes(textBox1.Text);
+            byte[] convertBytes = Encoding.Convert(encodingkoi8,encodingkoi8,originalBytes);
+            string koiString = encodingutf.GetString(convertBytes);
             textPort = koiString.ToCharArray();
             
             
