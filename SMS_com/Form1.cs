@@ -14,11 +14,11 @@ namespace SMS_com
 {
     public partial class Form1 : Form
     {
-        SerialPort _serialPort;
+        public static SerialPort _serialPort;
         string[] myPort; //массив для COM-портов
 
         //преобразование номера в чётный и переставление цифр местами
-        public string EncodePhoneNumber(string PhoneNumber)
+        public static string EncodePhoneNumber(string PhoneNumber)
         {
             string result = "";
             PhoneNumber = PhoneNumber.Replace("+", "");//вырезание + из номера
@@ -33,7 +33,7 @@ namespace SMS_com
             return result.Trim();
         }
 
-        public string StringToUCS2(string text)
+        public static string StringToUCS2(string text)
         {
             UnicodeEncoding ue = new UnicodeEncoding();
             byte[] ucs2 = ue.GetBytes(text);
@@ -75,44 +75,69 @@ namespace SMS_com
             }
 
             var text = textBox1.Text;//записываю текст сообщения в массив string
-            Encoding encodingKoi8 = Encoding.GetEncoding("KOI8-R");
-            byte[] bytesKoi8 = encodingKoi8.GetBytes(textBox1.Text);
-
-            for (int i = 0; i < bytesKoi8.Length; i++)
-            {
-                bytesKoi8[i] = (byte)(bytesKoi8[i] & 0x7F);//обнуляем битовой операцией "И" старший бит в каждом байте
-            }
-            string stringUtf8result = encodingKoi8.GetString(bytesKoi8);//строка символов в KOI8-R
-
             string PhoneNumber = "+79272880849";// + maskedTextBox1.Text;//номер получателя
-            PhoneNumber = "01" + "00" + PhoneNumber.Length.ToString("X2") + "91" + EncodePhoneNumber(PhoneNumber);
-            text = StringToUCS2(text);//получение кода сообщения
-            string leninByte = (text.Length / 2).ToString("X2");//получение длины в 16-чном формате
-            //объединение кода номера, длины сообщения, кода сообщения и промежуточных кодовых символов
-            text = PhoneNumber + "00" + "0" + "8" + leninByte + text;
+            bool result;
+            result = sendSMS(text, PhoneNumber);
+            if (result == true)
+            {
+                MessageBox.Show("Сообщение отправлено успешно");
+            }
+            else
+            {
+                MessageBox.Show("Произошла ошибка при отправке");
+            }
 
-            double lenMes = text.Length / 2;// кол-во октет в десятичной системе
-
-            _serialPort.WriteLine("AT\r\n");//переход в режим готовности
-            Thread.Sleep(500);//обязательные паузы между командами
-            _serialPort.Write("AT+CMGF=0\r\n"); //устанавливается режим PDU для отправки сообщений на русском языке
-            Thread.Sleep(500);
-            _serialPort.Write("AT+CMGS=" + (Math.Ceiling(lenMes)).ToString() + "\r\n");//передаем команду с номером телефона получателя СМС
-            Thread.Sleep(500);
-            text = "00" + text;
-
-            //char[] charUnicode = stringUtf8result.ToCharArray();
-            //byte[] byteUnicode = new byte[stringUtf8result.Length];
-
-            //for (int i = 0; i < stringUtf8result.Length; i++)
-            //{
-            //    byteUnicode[i] = (byte)charUnicode[i];
-            //}
-            _serialPort.Write(text + char.ConvertFromUtf32(26) + "\r\n");
-            //_serialPort.Write(byteUnicode, 0, byteUnicode.Length);
-            //_serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
-            Thread.Sleep(500);
             _serialPort.Close();
         }
+
+        private static bool sendSMS(string text, string PhoneNumber)
+        {
+            if (!_serialPort.IsOpen) return false;
+
+            try
+            {
+                _serialPort.WriteLine("AT\r\n");//переход в режим готовности
+                Thread.Sleep(500);//обязательные паузы между командами
+                _serialPort.Write("AT+CMGF=0\r\n"); //устанавливается режим PDU для отправки сообщений на русском языке
+                Thread.Sleep(500);
+            }
+            catch
+            {
+                return false;
+            }
+
+            try
+            {
+                PhoneNumber = "01" + "00" + PhoneNumber.Length.ToString("X2") + "91" + EncodePhoneNumber(PhoneNumber);
+                text = StringToUCS2(text);//получение кода сообщения
+                string leninByte = (text.Length / 2).ToString("X2");//получение длины в 16-чном формате
+                                                                    //объединение кода номера, длины сообщения, кода сообщения и промежуточных кодовых символов
+                text = PhoneNumber + "00" + "0" + "8" + leninByte + text;
+
+                double lenMes = text.Length / 2;// кол-во октет в десятичной системе
+
+
+                _serialPort.Write("AT+CMGS=" + (Math.Ceiling(lenMes)).ToString() + "\r\n");//передаем команду с номером телефона получателя СМС
+                Thread.Sleep(500);
+                text = "00" + text;
+                _serialPort.Write(text + char.ConvertFromUtf32(26) + "\r\n");
+                Thread.Sleep(500);
+            }
+            catch
+            {
+                return false;
+            }
+            
+            return true;
+        }
+
     }
 }
+//Encoding encodingKoi8 = Encoding.GetEncoding("KOI8-R");
+//byte[] bytesKoi8 = encodingKoi8.GetBytes(textBox1.Text);
+
+//for (int i = 0; i < bytesKoi8.Length; i++)
+//{
+//    bytesKoi8[i] = (byte)(bytesKoi8[i] & 0x7F);//обнуляем битовой операцией "И" старший бит в каждом байте
+//}
+//string stringUtf8result = encodingKoi8.GetString(bytesKoi8);//строка символов в KOI8-R
