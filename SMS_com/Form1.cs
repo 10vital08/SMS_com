@@ -86,12 +86,12 @@ namespace SMS_com
 
             string PhoneNumber = "+79272880849";// + maskedTextBox1.Text;//номер получателя
             PhoneNumber = "01" + "00" + PhoneNumber.Length.ToString("X2") + "91" + EncodePhoneNumber(PhoneNumber);
-            stringUtf8result = StringToUCS2(stringUtf8result);//получение кода сообщения
-            string leninByte = (stringUtf8result.Length / 2).ToString("X2");//получение длины в 16-чном формате
+            text = StringToUCS2(text);//получение кода сообщения
+            string leninByte = (text.Length / 2).ToString("X2");//получение длины в 16-чном формате
             //объединение кода номера, длины сообщения, кода сообщения и промежуточных кодовых символов
-            stringUtf8result = PhoneNumber + "00" + "0" + "8" + leninByte + stringUtf8result;
+            text = PhoneNumber + "00" + "0" + "8" + leninByte + text;
 
-            double lenMes = stringUtf8result.Length / 2;// кол-во октет в десятичной системе
+            double lenMes = text.Length / 2;// кол-во октет в десятичной системе
 
             _serialPort.WriteLine("AT\r\n");//переход в режим готовности
             Thread.Sleep(500);//обязательные паузы между командами
@@ -99,7 +99,7 @@ namespace SMS_com
             Thread.Sleep(500);
             _serialPort.Write("AT+CMGS=" + (Math.Ceiling(lenMes)).ToString() + "\r\n");//передаем команду с номером телефона получателя СМС
             Thread.Sleep(500);
-            stringUtf8result = "00" + stringUtf8result;
+            text = "00" + text;
 
             //char[] charUnicode = stringUtf8result.ToCharArray();
             //byte[] byteUnicode = new byte[stringUtf8result.Length];
@@ -108,7 +108,7 @@ namespace SMS_com
             //{
             //    byteUnicode[i] = (byte)charUnicode[i];
             //}
-            _serialPort.Write(stringUtf8result + char.ConvertFromUtf32(26) + "\r\n");
+            _serialPort.Write(text + char.ConvertFromUtf32(26) + "\r\n");
             //_serialPort.Write(byteUnicode, 0, byteUnicode.Length);
             //_serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
             Thread.Sleep(500);
