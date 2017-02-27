@@ -47,7 +47,7 @@ namespace SMS_com
             }
             return BitConverter.ToString(ucs2).Replace("-", "");
         }
-
+        
         public Form1()
         {
             InitializeComponent();
@@ -75,7 +75,7 @@ namespace SMS_com
                 {
                     _serialPort.Open();
                 }
-
+                
                 var text = textBox1.Text;//записываю текст сообщения в массив string
                 string PhoneNumber = maskedTextBox1.Text;//номер получателя
                 bool result;
@@ -94,8 +94,6 @@ namespace SMS_com
             else MessageBox.Show("Сообщение не отправлено.\r\nЗаполните все поля и введите сообщения");
 
         }
-
-        
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -217,5 +215,14 @@ namespace SMS_com
             return true;
         }
 
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char symbol = e.KeyChar;
+            if ((symbol <= 'А' && symbol < 'я') && (symbol != ' ' && symbol != '.' && symbol != ',' && symbol != '\b')
+                && (symbol < '0' && symbol < '9') || (symbol >= 'A' && symbol <= 'z'))
+            {
+                e.Handled = true;
+            }
+        }
     }
 }
