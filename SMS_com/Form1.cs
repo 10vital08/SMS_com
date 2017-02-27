@@ -68,54 +68,65 @@ namespace SMS_com
 
         private void button2_Click(object sender, EventArgs e)
         {
-            _serialPort = new SerialPort(comboBox1.Text);
-            _serialPort.Open();//открытие порта
-            if (!_serialPort.IsOpen)//если порт открыт
+            if(comboBox1.Text != "")
             {
-                _serialPort.Open();
-            }
+                _serialPort = new SerialPort(comboBox1.Text);
+                _serialPort.Open();//открытие порта
+                if (!_serialPort.IsOpen)//если порт открыт
+                {
+                    _serialPort.Open();
+                }
 
-            var text = textBox1.Text;//записываю текст сообщения в массив string
-            string PhoneNumber = maskedTextBox1.Text;//номер получателя
-            bool result;
-            result = RussianSMS(text, PhoneNumber);
-            if (result == true)
-            {
-                MessageBox.Show("Сообщение отправлено успешно\r\nПолучателю придет сообщение: " + text);
-            }
-            else
-            {
-                MessageBox.Show("Произошла ошибка при отправке");
-            }
+                var text = textBox1.Text;//записываю текст сообщения в массив string
+                string PhoneNumber = maskedTextBox1.Text;//номер получателя
+                bool result;
+                result = RussianSMS(text, PhoneNumber);
+                if (result == true)
+                {
+                    MessageBox.Show("Сообщение отправлено успешно.\r\nПолучателю придет сообщение: " + text);
+                }
+                else
+                {
+                    MessageBox.Show("Произошла ошибка при отправке");
+                }
 
-            _serialPort.Close();
+                _serialPort.Close();
+            }
+            else MessageBox.Show("Сообщение не отправлено.\r\nВыберите COM-порт из выпадающего списка");
+
         }
 
         
 
         private void button3_Click(object sender, EventArgs e)
         {
-            _serialPort = new SerialPort(comboBox1.Text);
-            _serialPort.Open();//открытие порта
-            if (!_serialPort.IsOpen)//если порт открыт
+            if (comboBox1.Text != "")
             {
-                _serialPort.Open();
-            }
+                _serialPort = new SerialPort(comboBox1.Text);
+                _serialPort.Open();//открытие порта
+                if (!_serialPort.IsOpen)//если порт открыт
+                {
+                    _serialPort.Open();
+                }
 
-            var text = textBox1.Text;//записываю текст сообщения в массив string
-            string PhoneNumber = maskedTextBox1.Text;//номер получателя
-            bool result;
-            result = TranslitSMS(text, PhoneNumber);
-            if (result == true)
-            {
-                
-            }
-            else
-            {
-                MessageBox.Show("Произошла ошибка при отправке");
-            }
+                var text = textBox1.Text;//записываю текст сообщения в массив string
+                string PhoneNumber = maskedTextBox1.Text;//номер получателя
+                bool result;
+                result = TranslitSMS(text, PhoneNumber);
+                if (result == true)
+                {
 
-            _serialPort.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Произошла ошибка при отправке");
+                }
+
+                _serialPort.Close();
+            }
+            else MessageBox.Show("Сообщение не отправлено.\r\nВыберите COM-порт из выпадающего списка");
+
+
         }
 
         private static bool RussianSMS(string text, string PhoneNumber)
@@ -197,7 +208,7 @@ namespace SMS_com
                 //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
                 _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
                 Thread.Sleep(500);
-                MessageBox.Show("Сообщение отправлено успешно\r\nПолучателю придет сообщение: " + stringUtf8result);
+                MessageBox.Show("Сообщение отправлено успешно.\r\nПолучателю придет сообщение: " + stringUtf8result);
             }
             catch
             {
