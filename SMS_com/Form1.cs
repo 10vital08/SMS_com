@@ -51,7 +51,6 @@ namespace SMS_com
         public Form1()
         {
             InitializeComponent();
-            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -68,7 +67,7 @@ namespace SMS_com
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if(comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.TextLength != 11)
+            if(comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.MaskCompleted)
             {
                 _serialPort = new SerialPort(comboBox1.Text);
                 _serialPort.Open();//открытие порта
@@ -100,7 +99,7 @@ namespace SMS_com
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.TextLength != 11)
+            if (comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.MaskCompleted)
             {
                 _serialPort = new SerialPort(comboBox1.Text);
                 _serialPort.Open();//открытие порта
