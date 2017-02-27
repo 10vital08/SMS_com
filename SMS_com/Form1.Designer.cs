@@ -78,7 +78,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 67);
+            this.label2.Location = new System.Drawing.Point(12, 58);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 13);
             this.label2.TabIndex = 5;
@@ -103,7 +103,7 @@
             // 
             // maskedTextBox1
             // 
-            this.maskedTextBox1.Location = new System.Drawing.Point(12, 83);
+            this.maskedTextBox1.Location = new System.Drawing.Point(15, 74);
             this.maskedTextBox1.Mask = "+79990000000";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.Size = new System.Drawing.Size(100, 20);

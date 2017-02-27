@@ -68,7 +68,7 @@ namespace SMS_com
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if(comboBox1.Text != "")
+            if(comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.TextLength != 11)
             {
                 _serialPort = new SerialPort(comboBox1.Text);
                 _serialPort.Open();//открытие порта
@@ -92,7 +92,7 @@ namespace SMS_com
 
                 _serialPort.Close();
             }
-            else MessageBox.Show("Сообщение не отправлено.\r\nВыберите COM-порт из выпадающего списка");
+            else MessageBox.Show("Сообщение не отправлено.\r\nЗаполните все поля и введите сообщения");
 
         }
 
@@ -100,7 +100,7 @@ namespace SMS_com
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (comboBox1.Text != "")
+            if (comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.TextLength != 11)
             {
                 _serialPort = new SerialPort(comboBox1.Text);
                 _serialPort.Open();//открытие порта
@@ -124,7 +124,7 @@ namespace SMS_com
 
                 _serialPort.Close();
             }
-            else MessageBox.Show("Сообщение не отправлено.\r\nВыберите COM-порт из выпадающего списка");
+            else MessageBox.Show("Сообщение не отправлено.\r\nЗаполните все поля и введите сообщения");
 
 
         }
