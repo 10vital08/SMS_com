@@ -68,7 +68,7 @@ namespace SMS_com
 
         private void button2_Click(object sender, EventArgs e)
         {
-            _serialPort = new SerialPort(textBox2.Text);
+            _serialPort = new SerialPort(comboBox1.Text);
             _serialPort.Open();//открытие порта
             if (!_serialPort.IsOpen)//если порт открыт
             {
@@ -81,7 +81,7 @@ namespace SMS_com
             result = RussianSMS(text, PhoneNumber);
             if (result == true)
             {
-                MessageBox.Show("Сообщение отправлено успешно");
+                MessageBox.Show("Сообщение отправлено успешно\r\nПолучателю придет сообщение: " + text);
             }
             else
             {
@@ -95,7 +95,7 @@ namespace SMS_com
 
         private void button3_Click(object sender, EventArgs e)
         {
-            _serialPort = new SerialPort(textBox2.Text);
+            _serialPort = new SerialPort(comboBox1.Text);
             _serialPort.Open();//открытие порта
             if (!_serialPort.IsOpen)//если порт открыт
             {
@@ -151,6 +151,7 @@ namespace SMS_com
                 text = "00" + text;
                 _serialPort.Write(text + char.ConvertFromUtf32(26) + "\r\n");
                 Thread.Sleep(500);
+                
             }
             catch
             {
