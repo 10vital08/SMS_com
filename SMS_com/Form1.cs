@@ -51,7 +51,7 @@ namespace SMS_com
         public Form1()
         {
             InitializeComponent();
-            _serialPort = new SerialPort("COM3");
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -68,6 +68,7 @@ namespace SMS_com
 
         private void button2_Click(object sender, EventArgs e)
         {
+            _serialPort = new SerialPort(textBox2.Text);
             _serialPort.Open();//открытие порта
             if (!_serialPort.IsOpen)//если порт открыт
             {
@@ -75,9 +76,9 @@ namespace SMS_com
             }
 
             var text = textBox1.Text;//записываю текст сообщения в массив string
-            string PhoneNumber = "+79272880849";// + maskedTextBox1.Text;//номер получателя
+            string PhoneNumber = maskedTextBox1.Text;//номер получателя
             bool result;
-            result = sendSMS(text, PhoneNumber);
+            result = RussianSMS(text, PhoneNumber);
             if (result == true)
             {
                 MessageBox.Show("Сообщение отправлено успешно");
@@ -90,8 +91,36 @@ namespace SMS_com
             _serialPort.Close();
         }
 
-        private static bool sendSMS(string text, string PhoneNumber)
+        
+
+        private void button3_Click(object sender, EventArgs e)
         {
+            _serialPort = new SerialPort(textBox2.Text);
+            _serialPort.Open();//открытие порта
+            if (!_serialPort.IsOpen)//если порт открыт
+            {
+                _serialPort.Open();
+            }
+
+            var text = textBox1.Text;//записываю текст сообщения в массив string
+            string PhoneNumber = maskedTextBox1.Text;//номер получателя
+            bool result;
+            result = TranslitSMS(text, PhoneNumber);
+            if (result == true)
+            {
+                
+            }
+            else
+            {
+                MessageBox.Show("Произошла ошибка при отправке");
+            }
+
+            _serialPort.Close();
+        }
+
+        private static bool RussianSMS(string text, string PhoneNumber)
+        {
+
             if (!_serialPort.IsOpen) return false;
 
             try
@@ -127,17 +156,55 @@ namespace SMS_com
             {
                 return false;
             }
-            
+
+            return true;
+        }
+
+        private static bool TranslitSMS(string text, string PhoneNumber)
+        {
+
+            if (!_serialPort.IsOpen) return false;
+
+            try
+            {
+                _serialPort.WriteLine("AT \r\n");//переход в режим готовности
+                Thread.Sleep(500);//обязательные паузы между командами
+                _serialPort.Write("AT+CMGF=1 \r\n"); //устанавливается текстовый режим для отправки сообщений
+                Thread.Sleep(500);
+            }
+            catch
+            {
+                return false;
+            }
+
+            try
+            {
+                Encoding encodingKoi8 = Encoding.GetEncoding("KOI8-R");
+                byte[] bytesKoi8 = encodingKoi8.GetBytes(text);
+
+                for (int i = 0; i < bytesKoi8.Length; i++)
+                {
+                    //результатом битовой операции является число значений типа int(int32),т.е. 4 байта
+                    //нужно преобразовать в байт
+                    bytesKoi8[i] = (byte)(bytesKoi8[i] & 0x7F);//обнуляем битовой операцией "И" старший бит в каждом байте
+                }
+                string stringUtf8result = encodingKoi8.GetString(bytesKoi8);//строка символов в KOI8-R
+                
+                _serialPort.Write("AT+CMGS=\"" + PhoneNumber + "\"" + "\r\n");//передаем команду с номером телефона получателя СМС
+                Thread.Sleep(500);
+                _serialPort.Write(bytesKoi8, 0, bytesKoi8.Length);
+                //отправляем текст сообщения(26 = комбинация CTRL-Z, необходимо при передаче сообщения)
+                _serialPort.Write(char.ConvertFromUtf32(26) + "\r\n");
+                Thread.Sleep(500);
+                MessageBox.Show("Сообщение отправлено успешно\r\nПолучателю придет сообщение: " + stringUtf8result);
+            }
+            catch
+            {
+                return false;
+            }
+
             return true;
         }
 
     }
 }
-//Encoding encodingKoi8 = Encoding.GetEncoding("KOI8-R");
-//byte[] bytesKoi8 = encodingKoi8.GetBytes(textBox1.Text);
-
-//for (int i = 0; i < bytesKoi8.Length; i++)
-//{
-//    bytesKoi8[i] = (byte)(bytesKoi8[i] & 0x7F);//обнуляем битовой операцией "И" старший бит в каждом байте
-//}
-//string stringUtf8result = encodingKoi8.GetString(bytesKoi8);//строка символов в KOI8-R
