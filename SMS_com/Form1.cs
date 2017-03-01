@@ -116,7 +116,8 @@ namespace SMS_com
                 }
                 else
                 {
-                    MessageBox.Show("Произошла ошибка при отправке");
+                    throw new Exception("Произошла ошибка при отправке");
+                    //MessageBox.Show("Произошла ошибка при отправке");
                 }
 
                 _serialPort.Close();
@@ -138,8 +139,9 @@ namespace SMS_com
                 _serialPort.Write("AT+CMGF=0\r\n"); //устанавливается режим PDU для отправки сообщений на русском языке
                 Thread.Sleep(500);
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show("Не удалось отправить сообщение" + ex.Message);
                 return false;
             }
 
@@ -161,8 +163,9 @@ namespace SMS_com
                 Thread.Sleep(500);
                 
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show("Не удалось отправить сообщение" + ex.Message);
                 return false;
             }
 
@@ -181,8 +184,9 @@ namespace SMS_com
                 _serialPort.Write("AT+CMGF=1 \r\n"); //устанавливается текстовый режим для отправки сообщений
                 Thread.Sleep(500);
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show("Не удалось отправить сообщение" + ex.Message);
                 return false;
             }
 
@@ -207,8 +211,9 @@ namespace SMS_com
                 Thread.Sleep(500);
                 MessageBox.Show("Сообщение отправлено успешно.\r\nПолучателю придет сообщение: " + stringUtf8result);
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show("Не удалось отправить сообщение" + ex.Message);
                 return false;
             }
 
