@@ -70,8 +70,8 @@ namespace SMS_com
             if(comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.MaskCompleted)
             {
                 _serialPort = new SerialPort(comboBox1.Text);
-                _serialPort.Open();//открытие порта
-                if (!_serialPort.IsOpen)//если порт открыт
+                //если порт не открыт
+                if (!_serialPort.IsOpen)
                 {
                     _serialPort.Open();
                 }
@@ -100,8 +100,8 @@ namespace SMS_com
             if (comboBox1.Text != "" & textBox1.Text != "" & maskedTextBox1.MaskCompleted)
             {
                 _serialPort = new SerialPort(comboBox1.Text);
-                _serialPort.Open();//открытие порта
-                if (!_serialPort.IsOpen)//если порт открыт
+                //если порт не открыт
+                if (!_serialPort.IsOpen)
                 {
                     _serialPort.Open();
                 }
